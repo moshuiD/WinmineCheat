@@ -80,7 +80,7 @@ namespace Tools {
 		};
 		std::shared_ptr<byte> ReadMem(DWORD addr, size_t len) 
 		{
-			std::shared_ptr<byte> buffer = std::make_shared<byte>(new byte[len]);
+			std::shared_ptr<byte> buffer(new byte[len]);
 			size_t readNums = 0;
 			ReadProcessMemory(m_TargetHandle, (LPVOID)addr, buffer.get(), len, &readNums);
 			return buffer;
