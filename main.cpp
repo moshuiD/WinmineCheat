@@ -1,6 +1,7 @@
 #include<iostream>
 #include"Core.hpp"
 #include<utility>
+#include<algorithm>
 bool Init(DWORD* const outPid, DWORD* const outModuleAddr)
 {
 	system("cls");
@@ -22,13 +23,8 @@ bool Init(DWORD* const outPid, DWORD* const outModuleAddr)
 	*outModuleAddr = moduleAddr;
 	return true;
 }
-
-void MainThread()
+static void Menu()
 {
-	DWORD pid{};
-	DWORD moduleAddr{};
-	while (!Init(&pid, &moduleAddr));
-
 	printf("***********************************************************\n");
 	printf("*                    WinMineSweeper Cheat                 *\n");
 	printf("*                        from moshui                      *\n");
@@ -38,10 +34,36 @@ void MainThread()
 
 	printf("[+] Init done.\n");
 	printf("[i] Press \"F1\" to get all bombers position.\n");
+	printf("[i] Press \"F5\" to refresh screen\n");
+}
+void MainThread()
+{
+	DWORD pid{};
+	DWORD moduleAddr{};
+	while (!Init(&pid, &moduleAddr));
 
-	if (GetAsyncKeyState(VK_F1) & 1) {
-		auto BombsMap = Core::GetInstance(pid, moduleAddr).GetAllBombs();
+	Menu();
+	while (true)
+	{
+		if (GetAsyncKeyState(VK_F5) & 1) {
+			system("cls");
+			Menu();
+		}
+		if (GetAsyncKeyState(VK_F1) & 1) {
+			auto BombsMap = Core::GetInstance(pid, moduleAddr).GetAllBombs();
+			printf("[+] Found bombs at:\n");
+			std::sort(BombsMap.begin(), BombsMap.end(), [](std::pair<int, int> map1, std::pair<int, int> map2) {
+				return map1.first < map2.first;
+				});
+			for (const auto& item : BombsMap)
+			{
+				printf("X:%d Y:%d \n", item.first, item.second);
+			}
+			printf("\n");
+		}
+		Sleep(1);
 	}
+
 }
 
 int main()

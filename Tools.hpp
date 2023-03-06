@@ -57,7 +57,7 @@ namespace Tools {
 		Mem(DWORD pid) 
 		{
 			m_TargetHandle = OpenProcess(PROCESS_ALL_ACCESS, false, pid);
-			if (m_TargetHandle != INVALID_HANDLE_VALUE) {
+			if (m_TargetHandle == INVALID_HANDLE_VALUE) {
 				m_TargetHandle = (HANDLE)-1;
 				printf("[-] Error: Not a VALID_HANDLE_VALUE for process\n");
 			}

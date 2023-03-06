@@ -42,5 +42,16 @@ Core::vector<Core::BombMap> Core::GetAllBombs()
 	int maxX = m->ReadMem<int>(m_ModuleAddr + Offsets::MaxX);
 	int maxY = m->ReadMem<int>(m_ModuleAddr + Offsets::MaxY);
 	shared_ptr<byte> map = m->ReadMem(m_ModuleAddr + Offsets::BombMap, 32 * maxY + maxX);
+	vector<BombMap> RetBombsMap;
+	for (int y = 0; y <= maxY; y++)
+	{
+		for (int x = 0; x <= maxX; x++)
+		{
+			if (map.get()[32 * y + x] == 0x8F) {
+				RetBombsMap.push_back({ x,y });
+			}
+		}
+	}
 
+	return RetBombsMap;
 }
