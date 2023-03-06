@@ -78,12 +78,19 @@ namespace Tools {
 			ReadProcessMemory(m_TargetHandle, (LPVOID)addr, &buffer, sizeof(buffer), &readNums);
 			return buffer;
 		};
+
 		std::shared_ptr<byte> ReadMem(DWORD addr, size_t len) 
 		{
 			std::shared_ptr<byte> buffer(new byte[len]);
 			size_t readNums = 0;
 			ReadProcessMemory(m_TargetHandle, (LPVOID)addr, buffer.get(), len, &readNums);
 			return buffer;
+		}
+		template<class T>
+		bool WriteMem(LPVOID addr, T buffer) 
+		{
+			size_t writeNums = 0;
+			return WriteProcessMemory(m_TargetHandle, addr, &buffer, sizeof(buffer), &writeNums);
 		}
 	};
 }

@@ -34,6 +34,7 @@ static void Menu()
 
 	printf("[+] Init done.\n");
 	printf("[i] Press \"F1\" to get all bombers position.\n");
+	printf("[i] Press \"F2\" to set timer delay\n");
 	printf("[i] Press \"F5\" to refresh screen\n");
 }
 void MainThread()
@@ -43,6 +44,7 @@ void MainThread()
 	while (!Init(&pid, &moduleAddr));
 
 	Menu();
+	Core c(pid, moduleAddr);
 	while (true)
 	{
 		if (GetAsyncKeyState(VK_F5) & 1) {
@@ -50,7 +52,7 @@ void MainThread()
 			Menu();
 		}
 		if (GetAsyncKeyState(VK_F1) & 1) {
-			auto BombsMap = Core::GetInstance(pid, moduleAddr).GetAllBombs();
+			auto BombsMap = c.GetAllBombs();
 			printf("[+] Found bombs at:\n");
 			std::sort(BombsMap.begin(), BombsMap.end(), [](std::pair<int, int> map1, std::pair<int, int> map2) {
 				return map1.first < map2.first;
@@ -60,6 +62,12 @@ void MainThread()
 				printf("X:%d Y:%d \n", item.first, item.second);
 			}
 			printf("\n");
+		}
+		if(GetAsyncKeyState(VK_F2)&1){
+			printf("[+]Input delay (ms)\n");
+			char szDelay[1024];
+			gets_s(szDelay, 1024);
+			c.SetTimerDelay(atoi(szDelay));
 		}
 		Sleep(1);
 	}

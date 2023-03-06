@@ -9,33 +9,33 @@ class Core
 	using vector = std::vector<T>;
 
 	using BombMap = std::pair<int, int>;//x,y
-	
+
 	template<class T>
 	using shared_ptr = std::shared_ptr<T>;
+	
 private:
 	Tools::Mem* m;
 	const DWORD m_Pid;
 	const DWORD m_ModuleAddr;
 public:
+	Core& operator=(const Core& m) {
+		return *this;
+	}
 	Core(DWORD pid, DWORD moduleAddr) :
-		m_Pid(pid), m_ModuleAddr(moduleAddr) 
+		m_Pid(pid), m_ModuleAddr(moduleAddr)
 	{
 		m = new Tools::Mem(pid);
 	};
-	~Core() 
+	~Core()
 	{
 		delete m;
 		m = nullptr;
 	};
-	static Core& GetInstance(DWORD pid, DWORD moduleAddr);
+
 	__forceinline vector<BombMap>GetAllBombs();
+	__forceinline bool SetTimerDelay(int delay);
 };
 
-Core& Core::GetInstance(DWORD pid, DWORD moduleAddr)
-{
-	static Core c(pid, moduleAddr);
-	return c;
-}
 
 Core::vector<Core::BombMap> Core::GetAllBombs()
 {
@@ -54,4 +54,12 @@ Core::vector<Core::BombMap> Core::GetAllBombs()
 	}
 
 	return RetBombsMap;
+}
+
+inline bool Core::SetTimerDelay(int delay)
+{
+	if (!m->ReadMem<byte>(m_ModuleAddr + Offsets::IsGameStart))
+		return m->WriteMem((LPVOID)(m_ModuleAddr + Offsets::TimerDelay), delay);
+	else
+		return false;
 }
