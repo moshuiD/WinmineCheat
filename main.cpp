@@ -64,7 +64,7 @@ void MainThread()
 			printf("\n");
 		}
 		if(GetAsyncKeyState(VK_F2)&1){
-			printf("[+]Input delay (ms)\n");
+			printf("[+]Input delay (ms)£º\n");
 			char szDelay[1024];
 			gets_s(szDelay, 1024);
 			c.SetTimerDelay(atoi(szDelay));
@@ -76,6 +76,5 @@ void MainThread()
 
 int main()
 {
-
 	MainThread();
 }
